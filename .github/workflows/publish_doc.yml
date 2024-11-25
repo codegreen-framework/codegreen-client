@@ -1,9 +1,11 @@
-name: Publish Docs to GitHub Pages
+# .github/workflows/deploy-docs.yml
+name: Deploy Documentation to GitHub Pages
 
 on:
   push:
     branches:
-      - release  # Only trigger on the release branch
+      - release  # Change this if your default branch is not 'main'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -12,34 +14,30 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11.9'
-      - name: Install dependencies
-        run: |
-            python -m pip install --upgrade pip
-            pip install  .
-            pip install sphinx==7.4.7  # Install Sphinx and theme if needed
-      - name: Move to docs folder
-        run: |
-          cd docs
-      - name: Build Sphinx Docs
-        run: |
-          make html  
-      - name: List files in build directory
-        run: ls -R ./build/html
-      - name: Upload static files as artifact
-        id: deployment
-        uses: actions/upload-pages-artifact@v3 
-        with:
-          path: build/html/
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r docs/source/requirements.txt
+
+    - name: Build documentation
+      run: |
+        sphinx-build docs/source docs/build/html
+    - name: Upload static files as artifact
+      id: deployment
+      uses: actions/upload-pages-artifact@v3 
+      with:
+        path: docs/build/html/
   deploy:
     environment:
       name: github-pages
