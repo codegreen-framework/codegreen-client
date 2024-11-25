@@ -7,6 +7,11 @@ on:
       - release  # Change this if your default branch is not 'main'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write  # Required for GitHub Pages API
+  id-token: write  # Required for authentication
+
 jobs:
   build:
     runs-on: ubuntu-22.04
