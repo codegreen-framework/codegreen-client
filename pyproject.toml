@@ -1,27 +1,24 @@
-[build-system]
-requires = ["setuptools>=61.0",    
-    "requests",
-    "pandas",
-    "numpy",
-    "codecarbon"]
-    
-build-backend = "setuptools.build_meta"
-
-[project]
+[tool.poetry]
 name = "codegreen"
 version = "0.0.1"
-authors = [
-  { name="Anne Hartebrodt", email="anne.hartebrodt@fau.de" },
-]
-description = "Codegreen -- make your computations carbon-aware"
+description = "A wrapper for codegreen web for easier access"
+authors = ["Anne Hartebrodt <anne.hartebrodt@fau.de>","Shubh Vardhan Jain <shubhvjain@gmail.com>"]
 readme = "README.md"
-requires-python = ">=3.7"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-]
+packages = [{ include = "codegreen" }]
+package-mode = true
 
-[project.urls]
-"Homepage" = "https://codegreen.world"
-"Bug Tracker" = "https://github.com/AnneHartebrodt/codegreen-client/issues"
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+requests = "^2.32.3"
+numpy = "^2.2.4"
+pandas = "^2.2.3"
+codecarbon = "^2.8.3"
+myst-parser = "^4.0.1"
+python-dotenv = "^1.0.1"
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

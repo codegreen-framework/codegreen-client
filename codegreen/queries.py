@@ -1,9 +1,6 @@
 import requests
-from datetime import datetime
 import pandas as pd
-import requests
-from datetime import datetime  
-import pandas as pd
+from datetime import datetime  , timedelta
 from urllib.parse import urljoin
 
 from codegreen.config import get_api_endpoint, get_api_key
@@ -13,25 +10,18 @@ from codegreen.expections import UnauthorizedException, InternalServerErrorExcep
 
 
 def get_prediction(estimated_runtime_hours:int = 1, 
-                   estimated_run_time_in_minutes:int=12,
-                   percent_renewable:int=40, 
-                   hard_finish_time:datetime.timestamp = datetime.utcnow().replace(hour=18, minute=0, second=0).timestamp(),
-                   area_code:list[str] = ['DE'],
+                   estimated_run_time_in_minutes:int=0,
+                   hard_finish_time:datetime.timestamp = datetime.now() + timedelta(hours=24),
                    log_request:bool = True, 
                    process_id:str = None,
                    experiment_name:str = None) -> requests.Response:
     """Get a prediction for an optimal time given the specified parameters.
-
     :param estimated_runtime_hours: Estimated run time in hours, defaults to 1
     :type estimated_runtime_hours: int, optional
     :param estimated_run_time_in_minutes: Estimated additional minutes of runtime, defaults to 12
     :type estimated_run_time_in_minutes: int, optional
-    :param percent_renewable: Required percentage of renewable energy available in the grid at the time of computation, defaults to 40
-    :type percent_renewable: int, optional
-    :param hard_finish_time: deadline for when the computation needs to be finished, defaults to datetime.utcnow().replace(hour=18, minute=0, second=0).timestamp()
+    :param hard_finish_time: deadline for when the computation needs to be finished, defaults to 24 hours from the current time
     :type hard_finish_time: datetime.timestamp, optional
-    :param area_code: list of area codes with a two letter country code and an optional postal code separated by a dash. Postal codes can be given as 1-5 digit areas. ['CC-PPPPP', 'CC', 'CC-P'], defaults to ['DE']
-    :type area_code: list[str], optional
     :param log_request: allow logging the request server side, this is required to compute the carbon offset, defaults to True
     :type log_request: bool, optional
     :param process_id: An string to identify the experiment, defaults to None
@@ -44,17 +34,13 @@ def get_prediction(estimated_runtime_hours:int = 1,
     """
     payload = {'estimated_runtime_hours': estimated_runtime_hours, 
                'estimated_runtime_minutes': estimated_run_time_in_minutes,
-               'percent_renewable': percent_renewable,
-               'hard_finish_time': hard_finish_time,
-                'area_code' : area_code,
+               'hard_finish_time': int(hard_finish_time.timestamp()),
                 'log_request' : log_request,
                 'process_id': process_id}
-    
     API_URL = get_api_endpoint(experiment_name)
     API_KEY = get_api_key(experiment_name)
-    AUTHORIZATION_HEADER = {'Authorization': API_KEY}
+    AUTHORIZATION_HEADER = {'Authorization': "Bearer "+API_KEY}
     r = requests.post(urljoin(API_URL, 'forecast/timeshift'), json=payload, headers=AUTHORIZATION_HEADER)
-    print(r.headers)
     if r.status_code == 200:
         return r
     if r.status_code == 401:

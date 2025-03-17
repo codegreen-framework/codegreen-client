@@ -1,10 +1,9 @@
 # codegreen python client :seedling:
-This repository contains the source code for the codegreen python client. For more information on the usage and background of this tool please go to our documentation on Readthedocs and the website [https://codegreen.world](https://codegreen.world). Please note that in order to use this webservice, you will need to generate an API key on the website.
+This repository contains the source code for the codegreen python client. For more information on the usage and background of this tool please go to our documentation on Readthedocs and the website [https://codegreen.world](https://codegreen.world). Please note that in order to use this web service, you will need to generate an API key on the website.
 
 > **Warning**
 > We are extremely happy that you consider using our tool. We are still actively developing the functionalities. If there are problems, please file and issue or contact us directly. Stay green! :seedling:
 
-##
 ## Functionalities
 This package is designed to make timeshifting computations easy. They main functionalities are
 1. Providing python decorators to timeshift, monitor and report the carbon footprint of computation. The functionalities can of course also be used indvidually.
